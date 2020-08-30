@@ -13,6 +13,7 @@ const EmployeesSchyme = new mongoose.Schema({
     },
     Emp_Id: {
         type: String,
+        unique: true,
         required: true
     },
     phoneNumber: {
@@ -55,26 +56,42 @@ const EmployeesSchyme = new mongoose.Schema({
         type: String,
         required: true
     },
+    AdminAccess: {
+        type: Boolean
+    }
 })
 
-EmployeesSchyme.statics.adminLogin = async (email, password)=>{
-
-    if(!(email.includes('bharath@gmail.com') & password.includes('asdf!@#$'))){
-        throw new Error('invalid login');
-    }
-     const employees = await Employees.findOne({ email })
+// before saving
+EmployeesSchyme.pre('save', async function(next){
     
-    if(!employees){
-        throw new Error('invalid login')
-    }
-
-    return employees 
-}
-
-EmployeesSchyme.pre('save', function(next){
     const employees = this
+    
+    if(employees.isModified('password')){
+        employees.password = await bcrypt.hash(employees.password, 8)
+    }
     next();
 })
 
-const Employees = mongoose.model('Employees', EmployeesSchyme)
+//Login validation
+EmployeesSchyme.statics.adminLogin = async (credential) => {
+    const email = credential.email;
+    let UserGivenpassword = credential.password;
+
+    const employees = await Employees.findOne({ email })
+
+    if(!employees){
+        throw new Error('invalid login1');
+    }
+    if(!(await bcrypt.compare(UserGivenpassword, employees.password))){
+        throw new Error('invalid login2');
+    }
+
+    if(!employees.AdminAccess){
+        throw new Error('invalid login3');
+    }
+    return employees 
+}
+
+const Employees = mongoose.model('Employees', EmployeesSchyme) // making separete schema but mangoose will do internally--Middleware
+
 module.exports = Employees
