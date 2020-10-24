@@ -1,5 +1,5 @@
-                Problem 1 -
-                A company-employee information system (API only) :-
+      Problem 1 -
+      A company-employee information system (API only) :-
 
 
 ● Admin only authenticated application. Only someone with admin credentials can perform
@@ -11,7 +11,7 @@ any action in this application.
 ● Given an employee ID in a company list all his subordinates and who is his reporting
   manager.
 
-               Stack/Tools to use -
+      Stack/Tools to use -
 ● Postman
 ● Node JS
 ● MongoDB
