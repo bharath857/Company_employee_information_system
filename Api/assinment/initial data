@@ -1,0 +1,52 @@
+{
+    "Company_Name":"company1",
+    "Emp_Name": "Name1",
+    "Emp_Id": "123456",
+    "phoneNumber":"1234567890",
+    "age":"25",
+    "email":"Name1@gmail.com",
+    "password":"Name1@gmail.com",
+    "Role":"Engineer",
+    "Division":"Technology",
+    "RepotingTo":"123456",
+    "AdminAccess":"true"
+},
+{
+    "Company_Name":"company1",
+    "Emp_Name": "Name2",
+    "Emp_Id": "123457",
+    "phoneNumber":"1234567891",
+    "age":"25",
+    "email":"Name2@gmail.com",
+    "password":"Name2@gmail.com",
+    "Role":"Engineer",
+    "Division":"Technology",
+    "RepotingTo":"123456",
+    "AdminAccess":"false"
+},
+{
+    "Company_Name":"company1",
+    "Emp_Name": "Name3",
+    "Emp_Id": "123458",
+    "phoneNumber":"1234567892",
+    "age":"25",
+    "email":"Name3@gmail.com",
+    "password":"Name3@gmail.com",
+    "Role":"Engineer",
+    "Division":"Technology",
+    "RepotingTo":"123456",
+    "AdminAccess":"false"
+},
+{
+    "Company_Name":"company1",
+    "Emp_Name": "Name4",
+    "Emp_Id": "123459",
+    "phoneNumber":"1234567893",
+    "age":"25",
+    "email":"Name4@gmail.com",
+    "password":"Name4@gmail.com",
+    "Role":"Engineer",
+    "Division":"Technology",
+    "RepotingTo":"123456",
+    "AdminAccess":"false"
+}

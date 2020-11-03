@@ -1,19 +1,21 @@
 var express= require('express');
 var router = new express.Router()
 const url = require('url');
+const auth = require('../middleware/auth');
 const Employees = require('../models/Employees');
 
 router.post('/Employees/login', async (req, res) => {
     
     try{
         const employee = await Employees.adminLogin(req.body)
-        res.send(employee)
+        const token = await employee.generateTokens()
+        res.send({employee, token})
     } catch(error){
         res.status(400).send(error.message)
     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 })
 
-router.get('/Employees',(req, res)=>{
+router.get('/Employees', auth, (req, res)=>{
     Employees.find({}).then((employees)=>{
         res.send(employees)
     }).catch((error)=>{
@@ -26,18 +28,16 @@ router.post('/Employees', (req, res) => {
     employees.save().then(() => {
         res.send(employees)
     }).catch((error) => {
-        res.status(400).send()
+        res.status(400).send(error)//error.message check for password
     })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 })
 
 router.get('/Employees/findbyid/:id',(req, res)=>{
     const id = req.params.id
-    console.log(id)
     Employees.findById(id).then((employees)=>{
         res.send(employees)
         console.log(employees)
     }).catch((error)=>{
-        console.log('No match')
         res.status(500).send();
     })
 }) 
@@ -47,8 +47,7 @@ router.get('/Employees/findbyempid/:Emp_Id',(req, res)=>{
     Employees.find(Emp_Id).then((employees)=>{
         res.send(employees)
        // console.log(employees)
-    }).catch((error)=>{ 
-        console.log('No match')
+    }).catch((error)=>{
         res.status(500).send();
     })
 })
@@ -59,7 +58,6 @@ router.get('/Employees/findbyname/:Emp_Name',(req, res)=>{
         res.send(employees)
         console.log(employees)
     }).catch((error)=>{ 
-        console.log('No match')
         res.status(500).send();
     })
 })
@@ -70,18 +68,16 @@ router.get('/Employees/findbyphone/:phoneNumber',(req, res)=>{
         res.send(employees)
         console.log(employees)
     }).catch((error)=>{ 
-        console.log('No match')
         res.status(500).send();
     })
 })
 router.get('/Employees/findSubordinates/:RepotingTo',(req, res)=>{
     const report = req.params
-    console.log(report)
+   
     Employees.find(report).then((employees)=>{
         res.send(employees)
         console.log(employees)
-    }).catch((error)=>{ 
-        console.log('No match')
+    }).catch((error)=>{
         res.status(500).send();
     })
 })
@@ -89,7 +85,7 @@ router.get('/Employees/findSubordinates/:RepotingTo',(req, res)=>{
 
 router.patch('/Employees/findbyid/:id', async (req, res)=>{
     const update = Object.keys(req.body)
-    const updatescanbedone = ['Company_Name', 'Emp_Name', 'Emp_Id', 'phoneNumber', 'age', 'email', 'password','Role', 'Division', 'RepotingTo'];
+    const updatescanbedone = ['Company_Name', 'Emp_Name', 'phoneNumber', 'age', 'email', 'password','Role', 'Division', 'RepotingTo'];
 
     const validation = update.every((update)=> updatescanbedone.includes(update))
  
@@ -99,7 +95,6 @@ router.patch('/Employees/findbyid/:id', async (req, res)=>{
  
     try{
       //const employee = await  Employees.findByIdAndUpdate(req.params.id, req.body, { new:true, runValidators:true})
-
        const employee = await  Employees.findById(req.params.id)
         update.forEach((update) => {
             employee[update] = req.body[update]
@@ -119,7 +114,6 @@ router.delete('/Employees/findbyid/:id', async (req, res)=>{
             return res.status(404).send()
         }
         res.send(employee)
-        console.log(employee)
     } catch(error){
         res.status(500).send()
     }

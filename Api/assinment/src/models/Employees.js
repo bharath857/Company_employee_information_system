@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
 
 const EmployeesSchyme = new mongoose.Schema({
     Company_Name: {
@@ -18,6 +19,7 @@ const EmployeesSchyme = new mongoose.Schema({
     },
     phoneNumber: {
         type: String,
+        unique: true,
         required: true,
         minlength: 10,
     },
@@ -58,9 +60,25 @@ const EmployeesSchyme = new mongoose.Schema({
     },
     AdminAccess: {
         type: Boolean
-    }
+    },
+    tokens:[{
+        token:{
+            type: String,
+            required: true
+        }
+    }]
+    
 })
 
+
+EmployeesSchyme.methods.generateTokens = async function(){
+    const employees = this
+    const token = jwt.sign({_id:employees._id.toString() }, 'stringtobereplased')
+
+    employees.tokens = employees.tokens.concat({ token})
+    await employees.save()
+    return token
+}
 // before saving
 EmployeesSchyme.pre('save', async function(next){
     
@@ -85,7 +103,6 @@ EmployeesSchyme.statics.adminLogin = async (credential) => {
     if(!(await bcrypt.compare(UserGivenpassword, employees.password))){
         throw new Error('invalid login2');
     }
-
     if(!employees.AdminAccess){
         throw new Error('invalid login3');
     }
