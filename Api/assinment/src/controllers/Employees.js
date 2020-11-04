@@ -4,24 +4,6 @@ const url = require('url');
 const auth = require('../middleware/auth');
 const Employees = require('../models/Employees');
 
-router.post('/Employees/login', async (req, res) => {
-    
-    try{
-        const employee = await Employees.adminLogin(req.body)
-        const token = await employee.generateTokens()
-        res.send({employee, token})
-    } catch(error){
-        res.status(400).send(error.message)
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-})
-
-router.get('/Employees', auth, (req, res)=>{
-    Employees.find({}).then((employees)=>{
-        res.send(employees)
-    }).catch((error)=>{
-        res.status(500).send()
-    })
-})
 
 router.post('/Employees', (req, res) => {
     const employees = new Employees(req.body)
@@ -30,6 +12,47 @@ router.post('/Employees', (req, res) => {
     }).catch((error) => {
         res.status(400).send(error)//error.message check for password
     })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+})
+
+router.post('/Employees/login', async (req, res) => {
+    try{
+        const employee = await Employees.adminLogin(req.body)
+        const token = await employee.generateTokens()
+        res.send({employee})
+    } catch(error){
+        res.status(400).send(error.message)
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+})
+
+router.get('/myProfile', auth, async (req, res) => {
+        console.log(req)
+        res.send(req.employees)
+  
+})
+
+router.get('/listallEmployees', auth, async (req, res) => {
+   
+    try{
+        const employee = await Employees.find({})
+        res.send(employee)
+    } catch(e){
+        res.status(500).send({error:'asdf'})
+    }
+})
+
+router.post('/Employees/logout', auth, async (req, res) => {
+    try{
+        console.log(req.token)
+        //to log out from all sessions req.employees.tokens = []
+        req.employees.tokens = req.employees.tokens.filter((token) =>{
+            return token.token !== req.token
+        })
+
+        await req.employees.save()
+        res.send()
+    } catch(error){
+        res.status(500).send(error)
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 })
 
 router.get('/Employees/findbyid/:id',(req, res)=>{

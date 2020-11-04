@@ -70,6 +70,14 @@ const EmployeesSchyme = new mongoose.Schema({
     
 })
 
+EmployeesSchyme.methods.toJSON = function(){
+    const employee = this
+    const employeeObject = employee.toObject()
+
+    delete employeeObject.password
+
+    return employeeObject
+}
 
 EmployeesSchyme.methods.generateTokens = async function(){
     const employees = this
