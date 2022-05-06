@@ -1,5 +1,5 @@
-const express= require('express');
-const app= express(); 
+const express = require('express');
+const app = express();
 
 const Employeesrouter = require('./controllers/Employees')
 
@@ -17,14 +17,14 @@ app.listen(port, () => {
 
 const bcrypt = require('bcryptjs');
 
-const encriptionDemo = async()=>{
+const encriptionDemo = async () => {
     const password = 'superman@1234'
     const hashedpassword = await bcrypt.hash(password, 8)
     console.log(password)
     console.log(hashedpassword)
 
     const checkequal = await bcrypt.compare('superman@1234', hashedpassword)
-    
+
     console.log(checkequal)
 }
 
@@ -32,8 +32,8 @@ const encriptionDemo = async()=>{
 
 const jwt = require('jsonwebtoken');
 
-const jwtDemo = async()=>{
-    const token = jwt.sign({_id:'unique'}, 'stringtobeevaluated',{expiresIn:'5 hours'})
+const jwtDemo = async () => {
+    const token = jwt.sign({ _id: 'unique' }, 'stringtobeevaluated', { expiresIn: '5 hours' })
     console.log(token)
 
     const equals = jwt.verify(token, 'stringtobeevaluated')

@@ -37,7 +37,7 @@ const EmployeesSchyme = new mongoose.Schema({
             }
         }
     },
-    password:{
+    password: {
         type: String,
         required: true,
         validate(value) {
@@ -61,16 +61,16 @@ const EmployeesSchyme = new mongoose.Schema({
     AdminAccess: {
         type: Boolean
     },
-    tokens:[{
-        token:{
+    tokens: [{
+        token: {
             type: String,
             required: true
         }
     }]
-    
+
 })
 
-EmployeesSchyme.methods.toJSON = function(){
+EmployeesSchyme.methods.toJSON = function () {
     const employee = this
     const employeeObject = employee.toObject()
 
@@ -79,20 +79,20 @@ EmployeesSchyme.methods.toJSON = function(){
     return employeeObject
 }
 
-EmployeesSchyme.methods.generateTokens = async function(){
+EmployeesSchyme.methods.generateTokens = async function () {
     const employees = this
-    const token = jwt.sign({_id:employees._id.toString() }, 'stringtobereplased')
+    const token = jwt.sign({ _id: employees._id.toString() }, 'stringtobereplased')
 
-    employees.tokens = employees.tokens.concat({ token})
+    employees.tokens = employees.tokens.concat({ token })
     await employees.save()
     return token
 }
 // before saving
-EmployeesSchyme.pre('save', async function(next){
-    
+EmployeesSchyme.pre('save', async function (next) {
+
     const employees = this
-    
-    if(employees.isModified('password')){
+
+    if (employees.isModified('password')) {
         employees.password = await bcrypt.hash(employees.password, 8)
     }
     next();
@@ -105,16 +105,16 @@ EmployeesSchyme.statics.adminLogin = async (credential) => {
 
     const employees = await Employees.findOne({ email })
 
-    if(!employees){
+    if (!employees) {
         throw new Error('invalid login1');
     }
-    if(!(await bcrypt.compare(UserGivenpassword, employees.password))){
+    if (!(await bcrypt.compare(UserGivenpassword, employees.password))) {
         throw new Error('invalid login2');
     }
-    if(!employees.AdminAccess){
+    if (!employees.AdminAccess) {
         throw new Error('invalid login3');
     }
-    return employees 
+    return employees
 }
 
 const Employees = mongoose.model('Employees', EmployeesSchyme) // making separete schema but mangoose will do internally--Middleware

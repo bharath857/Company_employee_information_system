@@ -25,7 +25,7 @@ rl.on('line', function (cmd) {
 
 
     input.push(cmd);
-    file.write("\n"+ cmd)
+    file.write("\n" + cmd)
     let rev = cmd.split('').reverse().join('')
     file2.write("\n" + rev)
 });
